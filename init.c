@@ -40,7 +40,7 @@
 #include "lib/pow2.h"
 #include "lib/memcpy.h"
 
-const char fio_version_string[] = FIO_VERSION;
+const char fio_version_string[] = "3.38-bazel";
 
 #define FIO_RANDSEED		(0xb1899bedUL)
 
