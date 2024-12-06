@@ -94,6 +94,7 @@ cc_binary(
     ],
     includes = ["."],
     linkopts = [
+        "-static",
         "-lpthread",
         "-lm",
         "-laio",
@@ -101,6 +102,7 @@ cc_binary(
         "-lz",
         "-ldl",
     ],
+    linkstatic = True,
     visibility = [
         "//visibility:public",
     ],
