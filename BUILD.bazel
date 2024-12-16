@@ -1,5 +1,5 @@
 cc_binary(
-    name = "fio",
+    name = "bin",
     srcs = [
         "backend.c",
         "cconv.c",
@@ -92,7 +92,6 @@ cc_binary(
         "-include",
         "config-host.h",
     ],
-    includes = ["."],
     linkopts = [
         "-static",
         "-lpthread",

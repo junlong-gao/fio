@@ -1,0 +1,8 @@
+module(
+    name = "fio",
+    version = "40fa922046ca6eae9a58a31c70f87090d326e080",
+)
+
+# https://github.com/bazelbuild/bazel-skylib/releases
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
+bazel_dep(name = "platforms", version = "0.0.10")
