@@ -1,5 +1,25 @@
-cc_binary(
-    name = "bin",
+load("@buildifier_prebuilt//:rules.bzl", "buildifier")
+
+copts = [
+    "-D_GNU_SOURCE",
+    "-DFIO_INTERNAL",
+    "-D_LARGEFILE_SOURCE",
+    "-D_FILE_OFFSET_BITS=64",
+    "-DBITS_PER_LONG=64",
+    "-std=gnu99",
+    "-O3",
+    "-g",
+    "-Wall",
+    "-Wwrite-strings",
+    "-Wdeclaration-after-statement",
+    "-ffast-math",
+] + [
+    "-include",
+    "config-host.h",
+]
+
+cc_library(
+    name = "lib",
     srcs = [
         "backend.c",
         "cconv.c",
@@ -19,7 +39,6 @@ cc_binary(
         "filehash.c",
         "filelock.c",
         "filesetup.c",
-        "fio.c",
         "fio_sem.c",
         "flow.c",
         "gettime.c",
@@ -72,26 +91,13 @@ cc_binary(
         "trim.c",
         "engines/sg.c",
         "oslib/linux-dev-lookup.c",
-        "engines/io_uring.c",
-        "engines/nvme.c",
     ],
-    copts = [
-        "-D_GNU_SOURCE",
-        "-DFIO_INTERNAL",
-        "-D_LARGEFILE_SOURCE",
-        "-D_FILE_OFFSET_BITS=64",
-        "-DBITS_PER_LONG=64",
-        "-std=gnu99",
-        "-O3",
-        "-g",
-        "-Wall",
-        "-Wwrite-strings",
-        "-Wdeclaration-after-statement",
-        "-ffast-math",
-    ] + [
-        "-include",
+    hdrs = [
         "config-host.h",
+        "fio.h",
     ],
+    copts = copts,
+    features = ["fully-static-link"],
     linkopts = [
         "-static",
         "-lpthread",
@@ -105,4 +111,30 @@ cc_binary(
     visibility = [
         "//visibility:public",
     ],
+)
+
+cc_binary(
+    name = "bin",
+    srcs = [
+        "fio.c",
+    ],
+    copts = copts,
+    features = ["fully-static-link"],
+    linkstatic = True,
+    deps = [
+        ":lib",
+    ],
+)
+
+# if someone wants to build their own main with ioengine, see spdk
+exports_files(["fio.c"])
+
+# Format alias for bazel code
+buildifier(
+    name = "build.fix",
+    exclude_patterns = [
+        "./.git/*",
+    ],
+    lint_mode = "fix",
+    mode = "fix",
 )
